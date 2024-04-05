@@ -1,4 +1,6 @@
 
+using Microsoft.EntityFrameworkCore;
+
 namespace EventPlannerAPI
 {
     public class Program
@@ -14,13 +16,21 @@ namespace EventPlannerAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Access the configuration to retrieve the connection string
+            var connectionString = builder.Configuration.GetConnectionString("EAD2_CA2_DATABASE_CONNECTION_STRING");
+            // Register DbContext with the connection string
+            builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(connectionString));
+
+            // Building the API application using the configuration set.
             var app = builder.Build();
 
+            // POST BUILD CONFIGURATION:
+
             // Configure the HTTP request pipeline.
-            //if (app.Environment.IsDevelopment()) (Removed condition to display swagger API UI on Azure)
+            //if (app.Environment.IsDevelopment()) //(Removed condition to display swagger API UI on Azure)
             //{
-                app.UseSwagger();
-                app.UseSwaggerUI();
+            app.UseSwagger();
+            app.UseSwaggerUI();
             //}
 
             app.UseHttpsRedirection();
