@@ -29,7 +29,7 @@ public class EventsController : ControllerBase
                 e.Description,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
-                People = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
+                EventsPeople = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
             }).ToList();
         return Ok(events);
     }
@@ -48,7 +48,7 @@ public class EventsController : ControllerBase
                 e.Description,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
-                People = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
+                EventsPeople = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
             }).First();
         if (eventItem == null)
         {
@@ -63,7 +63,7 @@ public class EventsController : ControllerBase
     {
         if (id != updatedEvent.EventId)
         {
-            return BadRequest("The event id you passed in doesn't match that of the updated event.");
+            return BadRequest();
         }
 
         var existingEvent = _context.Events.Find(id);
