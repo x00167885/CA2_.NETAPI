@@ -63,7 +63,7 @@ public class EventsController : ControllerBase
     {
         if (id != updatedEvent.EventId)
         {
-            return BadRequest();
+            return BadRequest("The event id you passed in doesn't match that of the updated event.");
         }
 
         var existingEvent = _context.Events.Find(id);
