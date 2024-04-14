@@ -56,4 +56,31 @@ public class EventsController : ControllerBase
         }
         return Ok(eventItem);
     }
+
+    // PUT: api/Events/5
+    [HttpPut("{id}")]
+    public ActionResult UpdateEvent(int id, [FromBody] Event updatedEvent)
+    {
+        if (id != updatedEvent.EventId)
+        {
+            return BadRequest();
+        }
+
+        var existingEvent = _context.Events.Find(id);
+        if (existingEvent == null)
+        {
+            return NotFound();
+        }
+
+        // Updating only specific fields of the event.
+        existingEvent.Title = updatedEvent.Title;
+        existingEvent.Date = updatedEvent.Date;
+        existingEvent.Description = updatedEvent.Description;
+        // NOT GOING TO ADD (UPDATE LIST) PEOPLE HERE!!!! GOING TO USE SEPERATE ENDPOINT.
+
+        // Saving the changes to the DB.
+        _context.SaveChanges();
+
+        return NoContent();
+    }
 }
