@@ -26,6 +26,7 @@ public class EventsController : ControllerBase
                 e.EventId,
                 e.Title,
                 e.Date,
+                e.Description,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
                 People = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
@@ -44,6 +45,7 @@ public class EventsController : ControllerBase
                 e.EventId,
                 e.Title,
                 e.Date,
+                e.Description,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
                 People = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
