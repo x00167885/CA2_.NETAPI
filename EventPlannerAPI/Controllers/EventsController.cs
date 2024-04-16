@@ -85,7 +85,7 @@ public class EventsController : ControllerBase
     }
     // PEOPLE ENDPOINTS:
 
-    [HttpGet("/People")]
+    [HttpGet("People")]
     public ActionResult GetPeople()
     {   // Projecting needed information into an anonymous type.
         var people = _context.People
