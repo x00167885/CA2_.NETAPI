@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EventPlannerAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventPlannerAPI.Controllers;
 
@@ -101,4 +102,35 @@ public class EventsController : ControllerBase
         return Ok(people);
     }
 
+    [HttpPost("{eventId}/AddPerson/{personId}")]
+    public ActionResult AddPersonToEvent(int eventId, int personId)
+    {
+        // Check if the event exists
+        var eventItem = _context.Events.Find(personId);
+        if (eventItem == null)
+        {
+            return NotFound("Event not found.");
+        }
+        // Check if the person exists
+        var personItem = _context.People.Find(personId);
+        if (personItem == null)
+        {
+            return NotFound("Person not found.");
+        }
+
+        // Checking if the person is already going to the event.
+        var existingLink = eventItem.EventsPeople.FirstOrDefault(ep => ep.PersonId == personId);
+        if (existingLink != null) { 
+        
+            return BadRequest("Person is already added to the event.");
+        }
+
+        // Add the person to the event,
+        eventItem.EventsPeople.Add(new EventPerson { EventId = eventId, PersonId = personId });
+
+        _context.SaveChanges();
+
+        // Yay.
+        return Ok("Person added to event successfully.");
+    }
 }
