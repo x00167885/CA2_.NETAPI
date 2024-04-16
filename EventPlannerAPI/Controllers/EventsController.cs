@@ -9,6 +9,7 @@ namespace EventPlannerAPI.Controllers;
 public class EventsController : ControllerBase
 {
     private readonly EventsDBContext _context;
+    private readonly ILogger<EventsController> _logger; // Add this line
 
     public EventsController(EventsDBContext context)
     {
@@ -105,8 +106,8 @@ public class EventsController : ControllerBase
     [HttpPost("{eventId}/AddPerson/{personId}")]
     public ActionResult AddPersonToEvent(int eventId, int personId)
     {
-        // Check if the event exists
-        var eventItem = _context.Events.Find(eventId);
+        // Check if the event exists within the intermediate table. (Supporting Many to Many)
+        var eventItem = _context.Events.Include(e => e.EventsPeople).SingleOrDefault(e => e.EventId == eventId);
         if (eventItem == null)
         {
             return NotFound("Event not found.");
@@ -125,12 +126,11 @@ public class EventsController : ControllerBase
             return BadRequest("Person is already added to the event.");
         }
 
-        // Add the person to the event,
+        // Add the person to the event.
         eventItem.EventsPeople.Add(new EventPerson { EventId = eventId, PersonId = personId });
 
         _context.SaveChanges();
 
-        // Yay.
         return Ok("Person added to event successfully.");
     }
 }
