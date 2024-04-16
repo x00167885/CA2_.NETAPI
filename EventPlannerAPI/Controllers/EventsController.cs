@@ -106,7 +106,7 @@ public class EventsController : ControllerBase
     public ActionResult AddPersonToEvent(int eventId, int personId)
     {
         // Check if the event exists
-        var eventItem = _context.Events.Find(personId);
+        var eventItem = _context.Events.Find(eventId);
         if (eventItem == null)
         {
             return NotFound("Event not found.");
