@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EventPlannerAPI.Models;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 namespace EventPlannerAPI.Controllers;
 
@@ -15,6 +13,8 @@ public class EventsController : ControllerBase
     {
         _context = context;
     }
+
+    // EVENT ENDPOINTS:
 
     // GET: api/Events
     [HttpGet]
@@ -83,4 +83,22 @@ public class EventsController : ControllerBase
 
         return NoContent();
     }
+    // PEOPLE ENDPOINTS:
+
+    [HttpGet("/People")]
+    public ActionResult GetPeople()
+    {   // Projecting needed information into an anonymous type.
+        var people = _context.People
+            .Select(p => new
+            {
+                p.PersonId,
+                p.Name,
+                p.Age,
+                // Avoiding circular references by selectively projecting only necessary 
+                // information about Events related to each Person, preventing serialization issues.
+                EventsPeople = p.EventsPeople.Select(ep => new { ep.Event.EventId, ep.Event.Title, ep.Event.Description })
+            }).ToList();
+        return Ok(people);
+    }
+
 }
