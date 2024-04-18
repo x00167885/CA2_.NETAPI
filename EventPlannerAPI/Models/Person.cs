@@ -8,6 +8,7 @@ namespace EventPlannerAPI.Models;
 public class Person
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int PersonId { get; set; } // Primary Key
 
     [Required]

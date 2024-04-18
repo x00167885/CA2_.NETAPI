@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventPlannerAPI.Models;
 
@@ -7,6 +8,7 @@ namespace EventPlannerAPI.Models;
 public class Event
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int EventId { get; set; } // Primary Key
 
     [Required]

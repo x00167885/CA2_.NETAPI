@@ -9,7 +9,6 @@ namespace EventPlannerAPI.Controllers;
 public class EventsController : ControllerBase
 {
     private readonly EventsDBContext _context;
-    private readonly ILogger<EventsController> _logger; // Add this line
 
     public EventsController(EventsDBContext context)
     {
@@ -38,7 +37,7 @@ public class EventsController : ControllerBase
 
     // GET: api/Events/5
     [HttpGet("{id}")]
-    public ActionResult GetEvent(int id)
+    public ActionResult GetEventById(int id)
     {
         var eventItem = _context.Events
             .Where(e => e.EventId == id)
@@ -85,6 +84,16 @@ public class EventsController : ControllerBase
 
         return NoContent();
     }
+
+    // POST: api/Events/
+    [HttpPost]
+    public ActionResult<Event> AddNewEvent([FromBody] Event newEvent)
+    {
+        _context.Events.Add(newEvent);
+        _context.SaveChanges(); // ef generates id on save cause of the attribute set on the key.
+        return CreatedAtAction(nameof(GetEventById), new { id = newEvent.EventId }, newEvent);
+    }
+
     // PEOPLE ENDPOINTS:
 
     [HttpGet("People")]
@@ -103,7 +112,7 @@ public class EventsController : ControllerBase
         return Ok(people);
     }
 
-    [HttpPost("{eventId}/AddPerson/{personId}")]
+    [HttpPost("{eventId}/Person/{personId}")]
     public ActionResult AddPersonToEvent(int eventId, int personId)
     {
         // Check if the event exists within the intermediate table. (Supporting Many to Many)
