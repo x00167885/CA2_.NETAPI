@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EventPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using static Azure.Core.HttpHeader;
 
 namespace EventPlannerAPI.Controllers;
 
@@ -92,6 +93,25 @@ public class EventsController : ControllerBase
         _context.Events.Add(newEvent);
         _context.SaveChanges(); // ef generates id on save cause of the attribute set on the key.
         return CreatedAtAction(nameof(GetEventById), new { id = newEvent.EventId }, newEvent);
+    }
+
+    // DELETE: api/Events/{id}
+    [HttpDelete("{id}")]
+    public ActionResult DeleteEventById(int id)
+    {
+        var eventToDelete = _context.Events.Include(e => e.EventsPeople).FirstOrDefault(e => e.EventId == id);
+        if (eventToDelete == null)
+        {
+            return NotFound("Event not found.");
+        }
+        // Deleting the relationships between this event and all of it's people.
+        _context.EventPerson.RemoveRange(eventToDelete.EventsPeople);
+
+        // Finally removing the actuall event.
+        _context.Events.Remove(eventToDelete);
+
+        _context.SaveChanges();
+        return Ok($"Deleted Event with id {id}");
     }
 
     // PEOPLE ENDPOINTS:
