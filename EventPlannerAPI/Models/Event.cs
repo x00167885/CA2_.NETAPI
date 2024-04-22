@@ -3,7 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EventPlannerAPI.Models;
 
-// REMEMBER to migrate changes to database on azure after making changes to this Person model class.
+public enum EventType {
+    FoodFestival, MusicConcert, TechConference, SportsMatch, ArtExhibition
+}
 
 public class Event
 {
@@ -23,6 +25,9 @@ public class Event
 
     [Required]
     public float Price { get; set; }
+
+    [Required]
+    public EventType Type { get; set; }
 
     public List<EventPerson> EventsPeople { get; set; } // For many-to-many relationship.
 }
