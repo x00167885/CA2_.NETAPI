@@ -29,6 +29,7 @@ public class EventsController : ControllerBase
                 e.Title,
                 e.Date,
                 e.Description,
+                e.Price,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
                 EventsPeople = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
@@ -48,6 +49,7 @@ public class EventsController : ControllerBase
                 e.Title,
                 e.Date,
                 e.Description,
+                e.Price,
                 // Avoiding circular references by selectively projecting only necessary 
                 // information about People related to each Event, preventing serialization issues.
                 EventsPeople = e.EventsPeople.Select(ep => new { ep.Person.PersonId, ep.Person.Name, ep.Person.Age })
@@ -77,6 +79,7 @@ public class EventsController : ControllerBase
         // Updating only specific fields of the event.
         existingEvent.Title = updatedEvent.Title;
         existingEvent.Date = updatedEvent.Date;
+        existingEvent.Price = updatedEvent.Price;
         existingEvent.Description = updatedEvent.Description;
         // NOT GOING TO ADD (UPDATE LIST) PEOPLE HERE!!!! GOING TO USE SEPERATE ENDPOINT.
 

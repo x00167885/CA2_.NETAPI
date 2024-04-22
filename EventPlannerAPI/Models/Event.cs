@@ -21,5 +21,8 @@ public class Event
     [Required]
     public string Description { get; set; }
 
+    [Required]
+    public float Price { get; set; }
+
     public List<EventPerson> EventsPeople { get; set; } // For many-to-many relationship.
 }

@@ -17,8 +17,8 @@ public class EventsDBContext : DbContext
 
         // Seeding the Event table.
         modelBuilder.Entity<Event>().HasData(
-            new Event { EventId = 1, Title = "Tech Conference", Date = new DateTime(2023, 4, 12), Description = "This is an event about tech" },
-            new Event { EventId = 2, Title = "Local Hackathon", Date = new DateTime(2023, 4, 22), Description = "Major Hackathon" }
+            new Event { EventId = 1, Title = "Tech Conference", Date = new DateTime(2023, 4, 12), Description = "This is an event about tech" , Price = 25},
+            new Event { EventId = 2, Title = "Local Hackathon", Date = new DateTime(2023, 4, 22), Description = "Major Hackathon", Price = 30 }
         );
 
         // Seeding the Person table.
