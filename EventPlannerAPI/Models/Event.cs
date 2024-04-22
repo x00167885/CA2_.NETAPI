@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace EventPlannerAPI.Models;
 
@@ -27,6 +28,7 @@ public class Event
     public float Price { get; set; }
 
     [Required]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EventType Type { get; set; }
 
     public List<EventPerson> EventsPeople { get; set; } // For many-to-many relationship.

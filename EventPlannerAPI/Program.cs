@@ -1,5 +1,5 @@
-
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace EventPlannerAPI;
 
@@ -10,6 +10,13 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+
+        // Adding JSON options to controllers, and configuring those options.
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            // Configuring the JSON serializer to serialize enums as strings
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        });
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
