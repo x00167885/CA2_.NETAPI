@@ -198,19 +198,26 @@ public class EventsController : ControllerBase
         {
             return NotFound("Person not found.");
         }
-
         // Checking if the person is already going to the event.
+
         var existingLink = eventItem.EventsPeople.FirstOrDefault(ep => ep.PersonId == personId);
         if (existingLink != null) { 
         
             return BadRequest("Person is already added to the event.");
         }
-
         // Add the person to the event.
         eventItem.EventsPeople.Add(new EventPerson { EventId = eventId, PersonId = personId });
 
         _context.SaveChanges();
 
         return Ok("Person added to event successfully.");
+    }
+
+    [HttpPost("Person")]
+    public ActionResult AddNewPerson([FromBody] Person newPerson)
+    {
+        _context.People.Add(newPerson);
+        _context.SaveChanges(); // ef generates id on save cause of the attribute set on the key.
+        return Ok("Person created successfully.");
     }
 }
