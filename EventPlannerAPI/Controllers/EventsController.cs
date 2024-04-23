@@ -136,7 +136,7 @@ public class EventsController : ControllerBase
         return Ok(people);
     }
 
-
+    // Update: api/Events/{id}/Person/{personId}
     [HttpPut("{eventId}/Person/{personId}")]
     public ActionResult UpdatePerson(int eventId, int personId, [FromBody] Person updatedPerson)
     {
@@ -159,6 +159,28 @@ public class EventsController : ControllerBase
         _context.SaveChanges();
 
         return NoContent();
+    }
+
+    // DELETE: api/Events/{id}/Person/{personId}
+    [HttpDelete("{eventId}/Person/{personId}")]
+    public ActionResult DeletePersonById(int eventId, int personId)
+    {
+        /*        var personToDelete = _context.People.Include(e => e.EventsPeople).FirstOrDefault(e => e.PersonId == id);
+        */
+        var personToDelete = _context.People.Find(personId);
+
+        if (personToDelete == null)
+        {
+            return NotFound("Event not found.");
+        }
+        // Deleting the relationships between this event and all of it's people.
+/*        _context.EventPerson.RemoveRange(personToDelete.EventsPeople);
+*/
+        // Remove the person.
+        _context.People.Remove(personToDelete);
+        //save the changes to the db
+        _context.SaveChanges();
+        return Ok($"Deleted Person no: {personId}");
     }
 
     [HttpPost("{eventId}/Person/{personId}")]
