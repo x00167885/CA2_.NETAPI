@@ -136,6 +136,28 @@ public class EventsController : ControllerBase
         return Ok(people);
     }
 
+    // GET: api/Events/5
+    [HttpGet("Person/{id}")]
+    public ActionResult GetPersonById(int id)
+    {
+        var personItem = _context.People
+            .Where(p => p.PersonId == id)
+            .Select(p => new
+            {
+                p.PersonId,
+                p.Name,
+                p.Age,
+                // Avoiding circular references by selectively projecting only necessary 
+                // information about Events related to each Person, preventing serialization issues.
+                EventsPeople = p.EventsPeople.Select(ep => new { ep.Event.EventId, ep.Event.Title, ep.Event.Description })
+            }).First();
+        if (personItem == null)
+        {
+            return NotFound();
+        }
+        return Ok(personItem);
+    }
+
     // Update: api/Events/{id}/Person/{personId}
     [HttpPut("{eventId}/Person/{personId}")]
     public ActionResult UpdatePerson(int eventId, int personId, [FromBody] Person updatedPerson)
@@ -218,6 +240,6 @@ public class EventsController : ControllerBase
     {
         _context.People.Add(newPerson);
         _context.SaveChanges(); // ef generates id on save cause of the attribute set on the key.
-        return Ok("Person created successfully.");
+        return CreatedAtAction(nameof(GetPersonById), new { id = newPerson.PersonId }, newPerson);
     }
 }
