@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EventPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using static Azure.Core.HttpHeader;
 
 namespace EventPlannerAPI.Controllers;
 
@@ -133,6 +132,31 @@ public class EventsController : ControllerBase
                 EventsPeople = p.EventsPeople.Select(ep => new { ep.Event.EventId, ep.Event.Title, ep.Event.Description })
             }).ToList();
         return Ok(people);
+    }
+
+
+    [HttpPut("{eventId}/Person/{personId}")]
+    public ActionResult UpdatePerson(int eventId, int personId, [FromBody] Person updatedPerson)
+    {
+        if (personId != updatedPerson.PersonId)
+        {
+            return BadRequest();
+        }
+
+        var existingPerson = _context.People.Find(personId);
+        if (existingPerson == null)
+        {
+            return NotFound();
+        }
+
+        // Updating only specific fields of the event.
+        existingPerson.Name = updatedPerson.Name;
+        existingPerson.Age = updatedPerson.Age;
+
+        // Saving the changes to the DB.
+        _context.SaveChanges();
+
+        return NoContent();
     }
 
     [HttpPost("{eventId}/Person/{personId}")]
