@@ -158,51 +158,40 @@ public class EventsController : ControllerBase
         return Ok(personItem);
     }
 
-    // Update: api/Events/{id}/Person/{personId}
-    [HttpPut("{eventId}/Person/{personId}")]
-    public ActionResult UpdatePerson(int eventId, int personId, [FromBody] Person updatedPerson)
+    // Update: api/Events/Person/{personId}
+    [HttpPut("Person/{personId}")]
+    public ActionResult UpdatePerson(int personId, [FromBody] Person updatedPerson)
     {
         if (personId != updatedPerson.PersonId)
         {
             return BadRequest();
         }
-
         var existingPerson = _context.People.Find(personId);
         if (existingPerson == null)
         {
             return NotFound();
         }
-
         // Updating only specific fields of the event.
         existingPerson.Name = updatedPerson.Name;
         existingPerson.Age = updatedPerson.Age;
-
         // Saving the changes to the DB.
         _context.SaveChanges();
-
         return NoContent();
     }
 
-    // DELETE: api/Events/{id}/Person/{personId}
-    [HttpDelete("{eventId}/Person/{personId}")]
-    public ActionResult DeletePersonById(int eventId, int personId)
+    // DELETE: api/Events/Person/{personId}
+    [HttpDelete("Person/{personId}")]
+    public ActionResult DeletePersonById(int personId)
     {
-        /*        var personToDelete = _context.People.Include(e => e.EventsPeople).FirstOrDefault(e => e.PersonId == id);
-        */
         var personToDelete = _context.People.Find(personId);
-
         if (personToDelete == null)
         {
             return NotFound("Event not found.");
         }
-        // Deleting the relationships between this event and all of it's people.
-/*        _context.EventPerson.RemoveRange(personToDelete.EventsPeople);
-*/
         // Remove the person.
         _context.People.Remove(personToDelete);
-        //save the changes to the db
-        _context.SaveChanges();
-        return Ok($"Deleted Person no: {personId}");
+        _context.SaveChanges(); // Save the changes.
+        return Ok($"Deleted Person with id: {personId}");
     }
 
     [HttpPost("{eventId}/Person/{personId}")]
